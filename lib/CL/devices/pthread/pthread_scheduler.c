@@ -521,7 +521,9 @@ pocl_pthread_driver_thread (void *p)
       cpu_set_t set;
       CPU_ZERO (&set);
       CPU_SET (td->index, &set);
-      pthread_setaffinity_np (td->thread, sizeof (cpu_set_t), &set);
+      /* pthread_setaffinity_np (td->thread, sizeof (cpu_set_t), &set); */
+      // Android CPU affinity are set using sched_setaffinity()
+      sched_setaffinity(td->thread, sizeof (cpu_set_t), &set);
     }
 #endif
 

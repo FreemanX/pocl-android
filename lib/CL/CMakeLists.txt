@@ -207,7 +207,7 @@ set(POCL_TRANSITIVE_LIBS ${POCL_PRIVATE_LINK_LIST} PARENT_SCOPE)
 
 # -lrt is required for glibc < 2.17
 if(HAVE_CLOCK_GETTIME AND CMAKE_SYSTEM_NAME MATCHES "Linux")
-  list(APPEND POCL_PUBLIC_LINK_LIST "rt")
+  # list(APPEND POCL_PUBLIC_LINK_LIST "rt")
 endif()
 
 #################################################################

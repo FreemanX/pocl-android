@@ -456,7 +456,7 @@ pocl_cache_init_topdir ()
   use_kernel_cache
       = pocl_get_bool_option ("POCL_KERNEL_CACHE", POCL_KERNEL_CACHE_DEFAULT);
 
-  const char *tmp_path = pocl_get_string_option ("POCL_CACHE_DIR", NULL);
+  const char *tmp_path = pocl_get_string_option ("POCL_CACHE_DIR", "/data/local/tmp/cache"); // Default: android cache path
   int needed;
 
   if (tmp_path)

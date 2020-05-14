@@ -199,13 +199,19 @@ llvm_codegen (char *output, unsigned device_i, cl_kernel kernel,
 
   /* Link through Clang driver interface who knows the correct toolchains
      for all of its targets.  */
-  const char *cmd_line[64] =
-    {CLANG, "-o", tmp_module, tmp_objfile};
-  const char **device_ld_arg = device->final_linkage_flags;
-  const char **pos = &cmd_line[4];
-  while ((*pos++ = *device_ld_arg++)) {}
+  /* const char *cmd_line[64] = */
+  /*   {CLANG, "-o", tmp_module, tmp_objfile}; */
+  /* const char **device_ld_arg = device->final_linkage_flags; */
+  /* const char **pos = &cmd_line[4]; */
+  /* while ((*pos++ = *device_ld_arg++)) {} */
+  /*  */
+  /* error = pocl_invoke_clang (device, cmd_line); */
 
-  error = pocl_invoke_clang (device, cmd_line);
+  // pocl portability workaround: invoke ld manually for linking
+  // patch: https://github.com/pocl/pocl/commit/562e6cd367db6b46488984ff31f2cdfac18e8c97, add -lm.  
+  // using lld library may solve this: https://github.com/pocl/pocl/issues/807#issuecomment-627580245
+  char *cmd_line_ld[16] = {"/data/local/tmp/pocl/ld", "-o", tmp_module, tmp_objfile, "-shared", "-lm" , NULL};
+  error = pocl_run_command(cmd_line_ld);
 
   if (error)
     {
@@ -1080,7 +1086,9 @@ pocl_check_kernel_dlhandle_cache (_cl_command_node *command,
 
   char *module_fn = pocl_check_kernel_disk_cache (command, specialize);
 
-  ci->dlhandle = dlopen (module_fn, RTLD_NOW | RTLD_LOCAL);
+  //ci->dlhandle = dlopen (module_fn, RTLD_NOW | RTLD_LOCAL); 
+  // Android dlopen failed: W + E load segments are not allowed(https://android.googlesource.com/platform/bionic/+/master/android-changes-for-ndk-developers.md) 
+  ci->dlhandle = dlopen (module_fn, RTLD_LAZY | RTLD_LOCAL);
   dl_error = dlerror ();
 
   if (ci->dlhandle == NULL || dl_error != NULL)

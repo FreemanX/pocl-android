@@ -27,7 +27,7 @@
 IGNORE_COMPILER_WARNING("-Wunused-parameter")
 
 #include <llvm/IR/Function.h>
-#include <llvm/PassAnalysisSupport.h>
+// #include <llvm/PassAnalysisSupport.h> // comment this line if build with llvm6, NDK R17c
 #include <llvm/Pass.h>
 
 POP_COMPILER_DIAGS

@@ -30,6 +30,8 @@ set(CMAKE_PROJECT_DESCRIPTION "pocl is a portable OpenCl runtime.")
 
 set(LATEST_KNOWN_CXX_STD_VERSION "20")
 set(SUPPORTED_CXX_STD_VERSION "11")
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 
 option(ENABLE_LATEST_CXX_STD "Upgrade C++ standard version to ${LATEST_KNOWN_CXX_STD_VERSION}. Required to get rid of unused variables warnings in compilers not supporting [[gnu::*]] attributes. Can bring other benefits, including performance and efficiency ones. Before a pull request build with this disabled." OFF)
 if(ENABLE_LATEST_CXX_STD)
@@ -84,7 +86,7 @@ set(POCL_VERSION ${VERSION_STRING})
 # required b/c SHARED libs defaults to ON while OBJECT defaults to OFF
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-enable_testing()
+# enable_testing()
 
 #####################################################
 
@@ -686,7 +688,7 @@ if(UNIX)
     # suppress them with -w.
     set(DEFAULT_HOST_LD_FLAGS "-dynamiclib -w -lm")
   elseif(ANDROID)
-    set(DEFAULT_HOST_LD_FLAGS "-L/system/lib/ -shared -ldl -lc /system/lib/crtbegin_so.o /system/lib/crtend_so.o")
+    set(DEFAULT_HOST_LD_FLAGS "-L/system/lib64/ -shared -ldl -lc /system/lib64/crtbegin_so.o /system/lib64/crtend_so.o")
   else()
     set(DEFAULT_HOST_LD_FLAGS "-shared")
   endif()
@@ -794,8 +796,8 @@ elseif(UNIX)
     message(STATUS "Cross-compiling without CPU/HSA devices -> skipping LIBDL search")
   else()
 
-    find_library(DL_LIB "dl")
-    find_file(DL_H "dlfcn.h")
+    find_library(DL_LIB "dl" HINTS "${ANDROID_TOOLCHAIN}/sysroot/usr/lib")
+    find_file(DL_H "dlfcn.h"B "dl" HINTS "${ANDROID_TOOLCHAIN}/sysroot/usr/include")
     if(DL_LIB AND DL_H)
       message(STATUS "libdl found")
 
@@ -831,14 +833,14 @@ endif()
 ######################################################################################
 # LTTNG
 
-if((NOT MSVC) AND (NOT ANDROID))
-  pkg_check_modules(LTTNG_UST lttng-ust>=2.7)
-  if(LTTNG_UST_FOUND)
-    set(HAVE_LTTNG_UST 1)
-  else()
-    set(HAVE_LTTNG_UST 0)
-  endif()
-endif()
+# if((NOT MSVC) AND (NOT ANDROID))
+#   pkg_check_modules(LTTNG_UST lttng-ust>=2.7)
+#   if(LTTNG_UST_FOUND)
+#     set(HAVE_LTTNG_UST 1)
+#   else()
+#     set(HAVE_LTTNG_UST 0)
+#   endif()
+# endif()
 
 ######################################################################################
 

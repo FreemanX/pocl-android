@@ -271,6 +271,9 @@ if(CLANGXX_RES OR CLANG_RES)
   message(FATAL_ERROR "Failed running clang/clang++ --version")
 endif()
 
+set(CLANG "${ANDROID_TOOLCHAIN}/bin/aarch64-linux-android-clang")
+set(CLANGXX "${ANDROID_TOOLCHAIN}/bin/aarch64-linux-android-clang++")
+
 find_program_or_die(LLVM_OPT  "opt"       "LLVM optimizer")
 find_program_or_die(LLVM_LLC  "llc"       "LLVM static compiler")
 find_program_or_die(LLVM_AS   "llvm-as"   "LLVM assembler")
@@ -434,7 +437,7 @@ if(NOT DEFINED CLANG_TARGET_OPTION AND ENABLE_HOST_CPU_DEVICES)
     if(NOT RES)
       set(CLANG_TGT "-target ")
     else()
-      message(FATAL_ERROR "Cannot determine Clang option to specify the target")
+      # message(FATAL_ERROR "Cannot determine Clang option to specify the target")
     endif()
   endif()
 
