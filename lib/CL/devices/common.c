@@ -210,7 +210,7 @@ llvm_codegen (char *output, unsigned device_i, cl_kernel kernel,
   // pocl portability workaround: invoke ld manually for linking
   // patch: https://github.com/pocl/pocl/commit/562e6cd367db6b46488984ff31f2cdfac18e8c97, add -lm.  
   // using lld library may solve this: https://github.com/pocl/pocl/issues/807#issuecomment-627580245
-  char *cmd_line_ld[16] = {"/data/local/tmp/pocl/ld", "-o", tmp_module, tmp_objfile, "-shared", "-lm" , NULL};
+  char *cmd_line_ld[16] = {"/data/local/tmp/pocl/ld", "-o", tmp_module, tmp_objfile, "-shared", "-L/system/lib64", "-lm" , NULL};
   error = pocl_run_command(cmd_line_ld);
 
   if (error)
